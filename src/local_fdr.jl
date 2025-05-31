@@ -1,3 +1,4 @@
+# Build a Vandermonde matrix of degree d
 function vander(a::Vector{Float64}, d::Int)
 
     n = length(a)
@@ -12,48 +13,35 @@ function vander(a::Vector{Float64}, d::Int)
     return V
 end
 
+"""
+Calculate local FDR values for a list of Z-scores.
+
+Parameters
+----------
+zscores : array_like
+    A vector of Z-scores
+null_proportion : float
+    The assumed proportion of true null hypotheses
+null_pdf : function mapping reals to positive reals
+    The density of null Z-scores; if None, use standard normal
+deg : int
+    The maximum exponent in the polynomial expansion of the
+    density of non-null Z-scores
+nbins : int
+    The number of bins for estimating the marginal density
+    of Z-scores.
+
+Returns
+-------
+fdr : array_like
+    A vector of FDR values
+
+References
+----------
+B Efron (2008).  Microarrays, Empirical Bayes, and the Two-Groups
+Model.  Statistical Science 23:1, 1-22.
+"""
 function local_fdr(zscores; null_proportion=1.0, null_pdf=nothing, deg=7, nbins=30)
-
-    # Calculate local FDR values for a list of Z-scores.
-
-    # Parameters
-    # ----------
-    # zscores : array_like
-    #     A vector of Z-scores
-    # null_proportion : float
-    #     The assumed proportion of true null hypotheses
-    # null_pdf : function mapping reals to positive reals
-    #     The density of null Z-scores; if None, use standard normal
-    # deg : int
-    #     The maximum exponent in the polynomial expansion of the
-    #     density of non-null Z-scores
-    # nbins : int
-    #     The number of bins for estimating the marginal density
-    #     of Z-scores.
-
-    # Returns
-    # -------
-    # fdr : array_like
-    #     A vector of FDR values
-
-    # References
-    # ----------
-    # B Efron (2008).  Microarrays, Empirical Bayes, and the Two-Groups
-    # Model.  Statistical Science 23:1, 1-22.
-
-    # Examples
-    # --------
-    # Basic use (the null Z-scores are taken to be standard normal):
-
-    # >>> from statsmodels.stats.multitest import local_fdr
-    # >>> import numpy as np
-    # >>> zscores = np.random.randn(30)
-    # >>> fdr = local_fdr(zscores)
-
-    # Use a Gaussian null distribution estimated from the data:
-
-    # >>> null = EmpiricalNull(zscores)
-    # >>> fdr = local_fdr(zscores, null_pdf=null.pdf)
 
     # Bins for Poisson modeling of the marginal Z-score density
     minz, maxz = extrema(zscores)
